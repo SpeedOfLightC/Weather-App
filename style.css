@@ -1,0 +1,237 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-color1: #212529;
+    --bg-color2: #2a2b2d;
+}
+
+body {
+    min-height: 100vh;
+    background-color: var(--bg-color1);
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    padding: 0 15px;
+}
+
+.header {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#searchbar {
+    background-color: var(--bg-color2);
+    padding: 12px;
+    border-radius: 25px;
+    font-size: 16px;
+    color: #ffffff;
+    outline: none;
+}
+
+#search-button {
+    padding: 12px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#location {
+    padding: 12px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #ea6e4b;
+}
+
+.weather-data {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+    /* border: 2px solid white; */
+}
+
+.card {
+    background-color: var(--bg-color2);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+p, .current-time, .current-location {
+    font-size: 14px;
+    color: #999999;
+}
+
+.current-time, .current-location {
+    margin: 10px 0;
+}
+
+#now {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+#current-temperature {
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.current-weather {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#current-temperature {
+    margin: 7px;
+}
+
+.current-location-time {
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.forecast-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.icon-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.weather-right {
+    /* border: 2px solid red; */
+    grid-column: span 3;
+}
+
+.weather-right h2 {
+    margin-bottom: 10px;
+}
+
+hr {
+    margin-bottom: 10px;
+}
+
+.highlights {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 15px;
+}
+
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.aqi-type {
+    color: #000000;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background-color: green;
+}
+
+.sci-highlights, .sunrise-sunset {
+    grid-column: span 2;
+}
+
+.air-indices {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+    align-items: center;
+}
+
+.air-indices p {
+    text-align: center;
+}
+
+.sunrise-sunset-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sunrise-sunset-items .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+#sunrise-time, #sunset-time {
+    margin-top: 15px;
+}
+
+.card-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hourly-forecast {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+}
+
+.hourly-forecast .card {
+    display: flex;
+    flex-direction: column;
+    padding: 25px 25px;
+    align-items: center;
+}
+
+@media (max-width: 1100px) {
+    .weather-data {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .weather-right {
+        grid-column: span 2;
+    }
+    .hourly-forecast {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .highlights {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .sci-highlights {
+        grid-column: span 3;
+    }
+}
+
+@media (max-width: 1040px) {
+    .weather-data {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .weather-right {
+        grid-column: span 1;
+    }
+    .hourly-forecast {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .highlights {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .sci-highlights {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 770px) {
+    .weather-data {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
