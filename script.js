@@ -6,6 +6,7 @@ const dt = new Date();
 
 // Selectors
 const searchBtn = document.querySelector("#search-button");
+const locationBtn = document.querySelector("#location");
 const cityInput = document.querySelector("#searchbar");
 const currentTemperature = document.querySelector("#current-temperature");
 const weatherDescription = document.querySelector("#weather-type");
@@ -17,13 +18,19 @@ const aqiType = document.querySelector(".aqi-type");
 const airIndices = document.querySelectorAll(".air-indices .item h2")
 const sunriseItem = document.querySelector("#sunrise-time");
 const sunsetItem = document.querySelector("#sunset-time");
+const humidityItem = document.querySelector("#humidity-value");
+const presssureItem = document.querySelector("#pressure-value");
+const visibilityItem = document.querySelector("#visibility-value");
+const windSpeedItem = document.querySelector("#wind-speed-value");
+const feelsLikeItem = document.querySelector("#feels-like-value");
+const hourlyForecastItem = document.querySelectorAll(".hourly-forecast .card");
 
 
 // get weather details
 const getWeatherDetails = (name, lat, lon, country, state) => {
 	const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
 	const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
-	const airPollutionUrl = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+	const airPollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
 
 
 	// fetch current weather details
@@ -32,7 +39,7 @@ const getWeatherDetails = (name, lat, lon, country, state) => {
 			return response.json();
 		})
 		.then((data) => {
-			console.log(data);
+			// console.log(data);
 			currentTemperature.innerHTML = `${(data.main.temp - 273.15).toFixed(2)}°C`;
 
 			weatherDescription.innerHTML = `${data.weather[0].description}`;
@@ -60,6 +67,14 @@ const getWeatherDetails = (name, lat, lon, country, state) => {
 			sunriseItem.innerHTML = `${sunriseHours}:${sunriseMinutes} AM`;
 			sunsetItem.innerHTML = `${sunsetHours}:${sunsetMinutes} PM`;
 
+			// Handle humidity, pressure, visibility, wind speed and feels like
+			humidityItem.innerHTML = `${data.main.humidity}%`;
+			presssureItem.innerHTML = `${data.main.pressure} hPa`;
+			visibilityItem.innerHTML = `${(data.visibility / 1000).toFixed(2)} km`;
+			windSpeedItem.innerHTML = `${data.wind.speed} m/s`;
+			feelsLikeItem.innerHTML = `${(data.main.feels_like - 273.15).toFixed(2)}°C`;
+
+
 		})
 		.catch((error) => {
 			alert(`Unable to fetch weather details of ${cityName}`);
@@ -71,6 +86,7 @@ const getWeatherDetails = (name, lat, lon, country, state) => {
 			return response.json();
 		})
 		.then((data) => {
+			// console.log(data);
 			let uniqueForecastDays = [];
 			let forecastDays = data.list.filter((forecast) => {
 				let forecastDate = new Date(forecast.dt_txt).getDate();
@@ -91,6 +107,24 @@ const getWeatherDetails = (name, lat, lon, country, state) => {
                         </div>
                         <p class="forecast-date">${dt.getDate()} ${months[Number(dt.getMonth())]}</p>
                         <p class="forecast-day">${weekDays[Number(dt.getDay())]}</p>				
+				`;
+			})
+
+
+			// Handle Hourly Forecast
+			hourlyForecastItem.forEach((item, index) => {
+				// console.log(item);	
+				let dt = new Date(data.list[index].dt_txt);
+				let hour = dt.getHours();
+				let amPm = "AM";
+				if (hour >= 12) amPm = "PM";
+				if (hour > 12) hour -= 12;
+				if (hour === 0) hour = 12;
+
+				item.innerHTML = `
+					<p>${hour} ${amPm}</p>
+                    <img src=" https://openweathermap.org/img/wn/${data.list[index].weather[0].icon}.png" alt="">
+                    <p>${(data.list[index].main.temp - 273.15).toFixed(2)}&deg;C</p>
 				`;
 			})
 		})
@@ -166,7 +200,7 @@ searchBtn.addEventListener("click", (e) => {
 	}
 
 	// fetch the city coordinates
-	let geocodingUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`;
+	let geocodingUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`;
 
 	fetch(geocodingUrl)
 		.then((response) => {
@@ -189,4 +223,34 @@ searchBtn.addEventListener("click", (e) => {
 
 })
 
+locationBtn.addEventListener("click", (e) => {
+	e.preventDefault();
+	if (!navigator.geolocation) {
+		alert("Geolocation is not supported by your browser");
+		return;
+	}
 
+	navigator.geolocation.getCurrentPosition((position) => {
+		// console.log(position.coords);
+		let lat = position.coords.latitude;
+		let lon = position.coords.longitude;
+		// console.log(lat, lon);
+
+		const reverseGeocodingUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=5&appid=${API_KEY}`;
+
+		fetch(reverseGeocodingUrl)
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			// console.log(data);
+			let cityName = data[0].name;
+			let country = data[0].country;
+			let state = data[0].state;
+			getWeatherDetails(cityName, lat, lon, country, state);
+		})
+		.catch((error) => {
+			alert(`Unable to fetch your location`);
+		})
+	})
+})
